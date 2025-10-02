@@ -1,7 +1,11 @@
 const express = require("express");
-const { createUser } = require("../controllers/UserController");
 const router = express.Router();
+const userController = require("../controllers/UserController");
 
-router.post("/", createUser);
+// API tạo user
+router.post("/", userController.createUser);
+
+// API lấy danh sách user
+router.get("/", userController.getAllUsers);
 
 module.exports = router;
