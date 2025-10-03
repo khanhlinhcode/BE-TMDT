@@ -1,11 +1,94 @@
-const createUser = () => {
-  return new Promise((resolve, reject) => {
+const User = require("../models/UserModel");
+const bcrypt = require("bcrypt");
+const { generalAccessToken, generalRefreshToken } = require("./JwtService");
+
+const createUser = (newUser) => {
+  return new Promise(async (resolve, reject) => {
+    const { name, email, password, confirmPassword, phone } = newUser;
+
     try {
-      resolve({});
+      if (password !== confirmPassword) {
+        return resolve({
+          status: "ERROR",
+          message: "Mật khẩu và xác nhận mật khẩu không trùng khớp",
+        });
+      }
+
+      const checkUser = await User.findOne({ email });
+      if (checkUser) {
+        return resolve({
+          status: "ERROR",
+          message: "Email đã tồn tại",
+        });
+      }
+
+      const hash = await bcrypt.hash(password, 10);
+
+      const createdUser = await User.create({
+        name,
+        email,
+        password: hash,
+        phone,
+        access_token: "fake-access",
+        refresh_token: "fake-refresh",
+      });
+
+      resolve({
+        status: "SUCCESS",
+        message: "Tạo user thành công",
+        data: createdUser,
+      });
     } catch (error) {
       reject(error);
     }
   });
 };
 
-module.exports = { createUser };
+const loginUser = (userLogin) => {
+  return new Promise(async (resolve, reject) => {
+    const { email, password } = userLogin;
+
+    try {
+      const checkUser = await User.findOne({ email });
+      if (!checkUser) {
+        return resolve({
+          status: "ERROR",
+          message: "User không tồn tại",
+        });
+      }
+
+      const comparePassword = await bcrypt.compare(
+        password,
+        checkUser.password
+      );
+      if (!comparePassword) {
+        return resolve({
+          status: "ERROR",
+          message: "Mật khẩu không đúng",
+        });
+      }
+
+      // Tạo JWT token
+      const access_token = await generalAccessToken({
+        id: checkUser._id,
+        isAdmin: checkUser.isAdmin,
+      });
+      const refresh_token = await generalRefreshToken({
+        id: checkUser._id,
+        isAdmin: checkUser.isAdmin,
+      });
+
+      resolve({
+        status: "SUCCESS",
+        message: "Login successful",
+        access_token,
+        refresh_token,
+        data: checkUser,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+module.exports = { createUser, loginUser };
