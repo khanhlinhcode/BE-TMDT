@@ -91,4 +91,133 @@ const loginUser = (userLogin) => {
   });
 };
 
-module.exports = { createUser, loginUser };
+const updateUser = (id, data) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Tìm user theo _id
+      const checkUser = await User.findById(id);
+      console.log("checkUser", checkUser);
+
+      if (!checkUser) {
+        return resolve({
+          status: "ERROR",
+          message: "User không tồn tại",
+        });
+      }
+
+      // Cập nhật user
+      const updatedUser = await User.findByIdAndUpdate(id, data, {
+        new: true,
+      });
+
+      resolve({
+        status: "SUCCESS",
+        message: "Update user successful",
+        data: updatedUser,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+const deleteUser = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Tìm user theo _id
+      const checkUser = await User.findById(id);
+      console.log("checkUser", checkUser);
+
+      if (!checkUser) {
+        return resolve({
+          status: "ERROR",
+          message: "User không tồn tại",
+        });
+      }
+
+      // Cập nhật user
+      await User.findByIdAndDelete(id);
+
+      resolve({
+        status: "SUCCESS",
+        message: "delete user successful",
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+const getAllUsers = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const allUsers = await User.find();
+      resolve({
+        status: "SUCCESS",
+        message: "Get all users successful",
+        data: allUsers,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+const getDetailsUser = (id) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Tìm user theo _id
+      const checkUser = await User.findById(id);
+      console.log("checkUser", checkUser);
+
+      if (!checkUser) {
+        return resolve({
+          status: "ERROR",
+          message: "User không tồn tại",
+        });
+      }
+
+      resolve({
+        status: "SUCCESS",
+        message: "Lấy thông tin user thành công",
+        data: checkUser,
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+// const refreshTokenService = (token) => {
+//   return new Promise(async (resolve, reject) => {
+//     try {
+//       // // Tìm user theo _id
+//       // const checkUser = await User.findById(id);
+//       // console.log("checkUser", checkUser);
+
+//       // if (!checkUser) {
+//       //   return resolve({
+//       //     status: "ERROR",
+//       //     message: "User không tồn tại",
+//       //   });
+//       // }
+//       console.log("token", token);
+
+//       resolve({
+//         status: "SUCCESS",
+//         message: "Lấy thông tin user thành công",
+//         data: checkUser,
+//       });
+//     } catch (error) {
+//       reject(error);
+//     }
+//   });
+// };
+
+module.exports = {
+  createUser,
+  loginUser,
+  updateUser,
+  deleteUser,
+  getAllUsers,
+  getDetailsUser,
+};
