@@ -187,32 +187,6 @@ const getDetailsUser = (id) => {
   });
 };
 
-// const refreshTokenService = (token) => {
-//   return new Promise(async (resolve, reject) => {
-//     try {
-//       // // Tìm user theo _id
-//       // const checkUser = await User.findById(id);
-//       // console.log("checkUser", checkUser);
-
-//       // if (!checkUser) {
-//       //   return resolve({
-//       //     status: "ERROR",
-//       //     message: "User không tồn tại",
-//       //   });
-//       // }
-//       console.log("token", token);
-
-//       resolve({
-//         status: "SUCCESS",
-//         message: "Lấy thông tin user thành công",
-//         data: checkUser,
-//       });
-//     } catch (error) {
-//       reject(error);
-//     }
-//   });
-// };
-
 module.exports = {
   createUser,
   loginUser,

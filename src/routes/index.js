@@ -1,5 +1,8 @@
 const UserRouter = require("./UserRouter");
-const Routers = require("./UserRouter");
+const ProductRouter = require("./ProductRouter");
 module.exports = (app) => {
-  app.use("/api/user", UserRouter); // POST /api/user
+  // user
+  app.use("/api/user", UserRouter);
+  // product
+  app.use("/api/product", ProductRouter);
 };
