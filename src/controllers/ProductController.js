@@ -94,8 +94,15 @@ const getDetailsProduct = async (req, res) => {
 };
 
 const getAllProduct = async (req, res) => {
+  console.log("req.query", req.query);
   try {
-    const response = await ProductService.getAllProduct();
+    const { limit, page, sort, filter } = req.query;
+    const response = await ProductService.getAllProduct(
+      Number(limit) || 8,
+      Number(page) || 0,
+      sort,
+      filter
+    );
     return res.status(200).json(response);
   } catch (error) {
     return res.status(500).json({

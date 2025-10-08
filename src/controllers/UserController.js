@@ -3,29 +3,21 @@ const JwtService = require("../services/JwtService");
 const createUser = async (req, res) => {
   try {
     console.log(req.body);
-    const {
-      name,
-      email,
-      password,
-      confirmPassword,
-      phone,
-      access_token,
-      refresh_token,
-    } = req.body;
+    const { email, password, confirmPassword } = req.body;
     const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     const isCheckEmail = reg.test(email);
-    if (!name || !email || !password || !confirmPassword || !phone) {
-      return res.status(400).json({
+    if (!email || !password || !confirmPassword) {
+      return res.status(200).json({
         status: "ERROR",
         message: "Vui long nhap day du thong tin",
       });
     } else if (!isCheckEmail) {
-      return res.status(404).json({
+      return res.status(200).json({
         status: "ERROR",
         message: "Vui long nhap day du thong tin email",
       });
     } else if (password !== confirmPassword) {
-      return res.status(404).json({
+      return res.status(200).json({
         status: "ERROR",
         message: "Mat Khau Phai Trung Nhau",
       });
@@ -42,10 +34,10 @@ const createUser = async (req, res) => {
 const loginUser = async (req, res) => {
   try {
     console.log(req.body);
-    const { name, email, password, confirmPassword, phone } = req.body;
+    const { email, password } = req.body;
     const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     const isCheckEmail = reg.test(email);
-    if (!name || !email || !password || !confirmPassword || !phone) {
+    if (!email || !password) {
       return res.status(400).json({
         status: "ERROR",
         message: "Vui long nhap day du thong tin",
@@ -54,11 +46,6 @@ const loginUser = async (req, res) => {
       return res.status(404).json({
         status: "ERROR",
         message: "Vui long nhap day du thong tin email",
-      });
-    } else if (password !== confirmPassword) {
-      return res.status(404).json({
-        status: "ERROR",
-        message: "Mat Khau Phai Trung Nhau",
       });
     }
     console.log("isCheckEmail", isCheckEmail);
