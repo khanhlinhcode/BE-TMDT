@@ -29,7 +29,7 @@ const authMiddleware = (req, res, next) => {
       console.log("user", user);
 
       const { payload } = user;
-      if (payload?.isAdmin) {
+      if (user?.isAdmin) {
         console.log("true");
         return next();
       } else {
@@ -72,9 +72,7 @@ const authUserMiddleware = (req, res, next) => {
       // Nếu token hợp lệ → gắn user vào request để dùng ở controller
       req.user = user;
       console.log("user", user);
-
-      const { payload } = user;
-      if (payload?.isAdmin || payload?.id === userId) {
+      if (user?.isAdmin || user?.id === userId) {
         console.log("true");
         return next();
       } else {

@@ -1,8 +1,9 @@
+const cors = require("cors");
 const dotenv = require("dotenv");
 const express = require("express");
 const routes = require("./routes");
 const bodyParser = require("body-parser");
-const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const { default: mongoose } = require("mongoose");
 
 dotenv.config();
@@ -12,6 +13,7 @@ const port = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(cookieParser())   
 routes(app); // mount router sau middleware
 mongoose
   .connect(process.env.MONGO_DB)

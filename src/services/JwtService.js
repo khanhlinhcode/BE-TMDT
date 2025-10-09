@@ -6,13 +6,13 @@ dotenv.config();
 // Tạo access token (ngắn hạn)
 const generalAccessToken = (payload) => {
   console.log("payload access", payload);
-  return jwt.sign({ payload }, process.env.ACCESS_TOKEN, { expiresIn: "365d" });
+  return jwt.sign({ ...payload }, process.env.ACCESS_TOKEN, { expiresIn: "365d" });
 };
 
 // Tạo refresh token (dài hạn)
 const generalRefreshToken = (payload) => {
   console.log("payload refresh", payload);
-  return jwt.sign({ payload }, process.env.REFRESH_TOKEN, {
+  return jwt.sign({ ...payload }, process.env.REFRESH_TOKEN, {
     expiresIn: "365d",
   });
 };
