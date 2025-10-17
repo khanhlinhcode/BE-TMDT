@@ -161,9 +161,25 @@ const refreshToken = async (req, res) => {
     });
   }
 };
+
+const logoutUser = async (req, res) => {
+  try {
+    res.clearCookie("refresh_token");
+    return res.status(200).json({
+      status: "SUCCESS",
+      message: "Logout successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      status: "ERROR",
+      message: error.message || "Something went wrong",
+    });
+  }
+};
 module.exports = {
   createUser,
   loginUser,
+  logoutUser,
   updateUser,
   deleteUser,
   getAllUsers,
