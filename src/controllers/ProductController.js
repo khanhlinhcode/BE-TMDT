@@ -2,7 +2,7 @@ const ProductService = require("../services/ProductService");
 
 const createProduct = async (req, res) => {
   try {
-    const { name, image, type, price, countInStock, rating } = req.body;
+    const { name, image, type, price, countInStock, rating, description } = req.body;
     console.log("req.body", req.body);
     // Kiểm tra dữ liệu đầu vào
     if (!name || !image || !type || !price || !countInStock || !rating) {

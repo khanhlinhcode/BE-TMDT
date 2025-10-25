@@ -176,6 +176,7 @@ const logoutUser = async (req, res) => {
     });
   }
 };
+
 module.exports = {
   createUser,
   loginUser,
