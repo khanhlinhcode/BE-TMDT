@@ -118,7 +118,7 @@ const getDetailsProduct = (id) => {
     } catch (error) {
       reject(error);
     }
-  });
+  }); 
 };
 
 const getAllProduct = (limit, page, sort, filter) => {

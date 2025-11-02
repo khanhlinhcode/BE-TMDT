@@ -2,10 +2,20 @@ const ProductService = require("../services/ProductService");
 
 const createProduct = async (req, res) => {
   try {
-    const { name, image, type, price, countInStock, rating, description } = req.body;
+    const { name, image, type, price, countInStock, rating, description } =
+      req.body;
     console.log("req.body", req.body);
+
     // Kiểm tra dữ liệu đầu vào
-    if (!name || !image || !type || !price || !countInStock || !rating) {
+    if (
+      !name ||
+      !image ||
+      !type ||
+      !price ||
+      !countInStock ||
+      !rating ||
+      !description
+    ) {
       return res.status(400).json({
         status: "ERROR",
         message: "Vui lòng nhập đầy đủ thông tin sản phẩm",
