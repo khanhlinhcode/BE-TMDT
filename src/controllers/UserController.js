@@ -173,7 +173,7 @@ const logoutUser = async (req, res) => {
     return res.status(500).json({
       status: "ERROR",
       message: error.message || "Something went wrong",
-    });
+    });hiẹn
   }
 };
 

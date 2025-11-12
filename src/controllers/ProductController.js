@@ -38,7 +38,7 @@ const createProduct = async (req, res) => {
 };
 
 const updateProduct = async (req, res) => {
-  try {
+try {
     const productId = req.params.id;
     const data = req.body;
     if (!productId) {
