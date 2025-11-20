@@ -38,7 +38,7 @@ const createProduct = async (req, res) => {
 };
 
 const updateProduct = async (req, res) => {
-try {
+  try {
     const productId = req.params.id;
     const data = req.body;
     if (!productId) {
@@ -78,6 +78,28 @@ const deleteProduct = async (req, res) => {
   } catch (error) {
     return res.status(401).json({
       message: error,
+    });
+  }
+};
+const deleteMany = async (req, res) => {
+  try {
+    const { ids } = req.body;
+
+    if (!ids || !Array.isArray(ids)) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "ids must be an array",
+      });
+    }
+
+    const response = await ProductService.deleteManyProduct(ids);
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.error("Delete many error:", error);
+    return res.status(500).json({
+      status: "ERROR",
+      message: error.message,
     });
   }
 };
@@ -121,10 +143,12 @@ const getAllProduct = async (req, res) => {
     });
   }
 };
+
 module.exports = {
   createProduct,
   updateProduct,
   deleteProduct,
+  deleteMany,
   getAllProduct,
   getDetailsProduct,
 };

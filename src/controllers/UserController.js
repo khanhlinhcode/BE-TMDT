@@ -3,59 +3,63 @@ const JwtService = require("../services/JwtService");
 const createUser = async (req, res) => {
   try {
     console.log(req.body);
-    const { email, password, confirmPassword } = req.body;
-    const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    const { email, password } = req.body;
+
+    const reg = /\S+@\S+\.\S+/;
     const isCheckEmail = reg.test(email);
-    if (!email || !password || !confirmPassword) {
+
+    if (!email || !password) {
       return res.status(200).json({
         status: "ERROR",
         message: "Vui long nhap day du thong tin",
       });
-    } else if (!isCheckEmail) {
+    }
+
+    if (!isCheckEmail) {
       return res.status(200).json({
         status: "ERROR",
-        message: "Vui long nhap day du thong tin email",
-      });
-    } else if (password !== confirmPassword) {
-      return res.status(200).json({
-        status: "ERROR",
-        message: "Mat Khau Phai Trung Nhau",
+        message: "Email khong hop le",
       });
     }
-    console.log("isCheckEmail", isCheckEmail);
+
     const response = await UserService.createUser(req.body);
     return res.status(200).json(response);
   } catch (error) {
-    return res.status(401).json({
-      message: error,
-    });
+    return res.status(401).json({ message: error });
   }
 };
+console.log("createUser", createUser);
 const loginUser = async (req, res) => {
   try {
     console.log(req.body);
     const { email, password } = req.body;
-    const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+    const reg = /\S+@\S+\.\S+/; // NEW regex
     const isCheckEmail = reg.test(email);
+
     if (!email || !password) {
       return res.status(400).json({
         status: "ERROR",
         message: "Vui long nhap day du thong tin",
       });
-    } else if (!isCheckEmail) {
+    }
+
+    if (!isCheckEmail) {
       return res.status(404).json({
         status: "ERROR",
-        message: "Vui long nhap day du thong tin email",
+        message: "Email không hợp lệ",
       });
     }
-    console.log("isCheckEmail", isCheckEmail);
+
     const response = await UserService.loginUser(req.body);
     const { refresh_token, ...newResponse } = response;
-    // console.log("response", response);
+
     res.cookie("refresh_token", refresh_token, {
       httpOnly: true,
-      Secure: true,
+      secure: true,
+      sameSite: "none",
     });
+
     return res.status(200).json(newResponse);
   } catch (error) {
     return res.status(401).json({
@@ -106,6 +110,29 @@ const deleteUser = async (req, res) => {
   }
 
   // Delete the user
+};
+
+const deleteMany = async (req, res) => {
+  try {
+    const { ids } = req.body;
+
+    console.log("IDS:", ids);
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({
+        status: "ERROR",
+        message: "The IDS is required",
+      });
+    }
+
+    const response = await UserService.deleteManyUser(ids);
+
+    return res.status(200).json(response);
+  } catch (error) {
+    return res.status(401).json({
+      message: error,
+    });
+  }
 };
 
 // Return the response
@@ -173,7 +200,8 @@ const logoutUser = async (req, res) => {
     return res.status(500).json({
       status: "ERROR",
       message: error.message || "Something went wrong",
-    });hiẹn
+    });
+    hiẹn;
   }
 };
 
@@ -185,5 +213,6 @@ module.exports = {
   deleteUser,
   getAllUsers,
   refreshToken,
+  deleteMany,
   getDetailsUser,
 };

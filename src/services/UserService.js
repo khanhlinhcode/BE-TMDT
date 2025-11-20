@@ -4,16 +4,9 @@ const { generalAccessToken, generalRefreshToken } = require("./JwtService");
 
 const createUser = (newUser) => {
   return new Promise(async (resolve, reject) => {
-    const { name, email, password, confirmPassword, phone } = newUser;
+    const { name, email, password, phone, isAdmin } = newUser;
 
     try {
-      if (password !== confirmPassword) {
-        return resolve({
-          status: "ERROR",
-          message: "Mật khẩu và xác nhận mật khẩu không trùng khớp",
-        });
-      }
-
       const checkUser = await User.findOne({ email });
       if (checkUser) {
         return resolve({
@@ -29,8 +22,7 @@ const createUser = (newUser) => {
         email,
         password: hash,
         phone,
-        access_token: "fake-access",
-        refresh_token: "fake-refresh",
+        isAdmin: isAdmin === "true" || isAdmin === true,
       });
 
       resolve({
@@ -94,25 +86,25 @@ const loginUser = (userLogin) => {
 const updateUser = (id, data) => {
   return new Promise(async (resolve, reject) => {
     try {
-      // Tìm user theo _id
-      const checkUser = await User.findById(id);
-      console.log("checkUser", checkUser);
-
-      if (!checkUser) {
-        return resolve({
-          status: "ERROR",
-          message: "User không tồn tại",
-        });
-      }
-
-      // Cập nhật user
-      const updatedUser = await User.findByIdAndUpdate(id, data, {
-        new: true,
-      });
+      const updatedUser = await User.findByIdAndUpdate(
+        id,
+        {
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          address: data.address || "",
+          avatar: data.avatar || "",
+          isAdmin:
+            data.isAdmin === "true" ||
+            data.isAdmin === true ||
+            data.isAdmin === 1,
+        },
+        { new: true }
+      );
 
       resolve({
         status: "SUCCESS",
-        message: "Update user successful",
+        message: "UPDATE SUCCESS",
         data: updatedUser,
       });
     } catch (error) {
@@ -140,6 +132,20 @@ const deleteUser = (id) => {
       resolve({
         status: "SUCCESS",
         message: "delete user successful",
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+const deleteManyUser = (ids) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await User.deleteMany({ _id: { $in: ids } });
+      resolve({
+        status: "SUCCESS",
+        message: "deleteMany user successful",
       });
     } catch (error) {
       reject(error);
@@ -194,4 +200,5 @@ module.exports = {
   deleteUser,
   getAllUsers,
   getDetailsUser,
+  deleteManyUser,
 };
